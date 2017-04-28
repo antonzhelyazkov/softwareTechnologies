@@ -1,0 +1,93 @@
+﻿@model IEnumerable<mvcBlog.Models.Post>
+@using Microsoft.AspNet.Identity
+
+
+@{
+    ViewBag.Title = "Search";
+}
+
+<h2>Търсене в статиите</h2>
+
+@*<p>
+        @Html.ActionLink("Create New", "Create")
+    </p>*@
+<p>
+    @using (Html.BeginForm("Search", "Posts", FormMethod.Get))
+    {
+        <br />
+        @Html.TextBox("search") <input type="submit" value="Search" size="14" px />
+    }
+</p>
+
+    @if (Model.Count() == 0)
+    {
+   
+    }
+    else
+    {
+    
+        <br />
+        <div class="alert alert-success">
+            @Model.Count() results found.
+        </div>
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Body)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayName("Actions")
+                </th>
+            
+                <th>
+                    @Html.DisplayNameFor(model => model.Author)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <a href="../../Posts/Details/@item.Id">@mvcBlog.Classes.Utils.CutText(item.Title, 33)</a>
+                    </td>
+                    <td>
+                        @mvcBlog.Classes.Utils.CutText(item.Body, 77)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+
+                    <td>
+                           @Html.ActionLink("Details", "Details", new { id = item.Id })
+                           @if (User.IsInRole("Administrator") || item.Author.UserName == User.Identity.GetUserName())
+                           {
+                         
+                              @Html.ActionLink("Edit ", "Edit", new { id = item.Id }, new { @style = "color:brown;" })
+                              @Html.ActionLink(" Delete", "Delete", new { id = item.Id }, new { @style = "color:coral;" })
+                         
+                           }
+                          
+                    </td>
+
+                  
+                    <td>
+                        @if (item.Author == null)
+                    { <i>No Author</i> }
+                        @Html.DisplayFor(modelItem => item.Author.UserName)
+                    </td>
+
+
+                </tr>
+            }
+
+
+        </table>
+
+    }
